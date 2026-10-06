@@ -1007,6 +1007,7 @@ def write_note_budget(
         "quality_metrics": quality_metrics,
         "recommended_note_chars_min": target_min,
         "recommended_note_chars_max": target_max,
+        "no_upper_limit": True,
         "quick_note_chars": quick_target,
         "deep_note_chars": deep_target,
         "target_compression_ratio_min": compression_ratio_min,

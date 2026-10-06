@@ -76,7 +76,7 @@ def score_note(archive_dir: Path, note_path: Path) -> dict[str, Any]:
     note = note_path.read_text(encoding="utf-8")
     actual_chars = visible_text_chars(note)
     low = int(budget.get("recommended_note_chars_min") or 0)
-    high = int(budget.get("recommended_note_chars_max") or 0)
+    high = 0 if budget.get("no_upper_limit") else int(budget.get("recommended_note_chars_max") or 0)
     subtitle_chars = int(budget.get("subtitle_chars") or 0)
     content_chars = int(budget.get("content_chars") or subtitle_chars or 0)
     duration_minutes = float(budget.get("duration_minutes") or 0)
@@ -91,7 +91,8 @@ def score_note(archive_dir: Path, note_path: Path) -> dict[str, Any]:
         "base_note_chars_max": budget.get("base_note_chars_max"),
         "recommended_note_chars_min": low,
         "recommended_note_chars_max": high,
-        "status": status_for(actual_chars, low, high),
+        "status": status_for(actual_chars, low, high) if high else ("too_short" if actual_chars < low else "ok"),
+        "no_upper_limit": bool(budget.get("no_upper_limit")),
         "quality_multiplier": budget.get("quality_multiplier"),
         "quality_metrics": budget.get("quality_metrics"),
         "actual_compression_ratio": round(actual_chars / content_chars, 4) if content_chars else None,
